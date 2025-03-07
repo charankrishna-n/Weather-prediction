@@ -1,0 +1,55 @@
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from google.colab import files
+
+uploaded = files.upload()
+
+for fn in uploaded.keys():
+  print('User uploaded file "{name}" with length {length} bytes'.format(
+      name=fn, length=len(uploaded[fn])))
+
+# Assuming the uploaded file contains data in a format that can be easily parsed
+# Example: CSV file with temperature, humidity, and weather outcome
+
+try:
+    # Replace 'your_file.csv' with the actual file name
+    data = np.genfromtxt('your_file.csv', delimiter=',', skip_header=1) # Skip the header row
+    X = data[:, :2] # Assuming first two columns are temperature, humidity
+    y = data[:, 2].astype(int) # Third column is the weather outcome
+
+    model = LogisticRegression()
+    model.fit(X,y)
+
+    def predict_weather(temperature, humidity):
+        prediction = model.predict(np.array([[temperature, humidity]]))
+        if prediction[0] == 0:
+            return "sunny"
+        else:
+            return "rainy"
+
+    temperature = float(input("Enter temperature: "))
+    humidity = float(input("Enter humidity: "))
+
+    predicted_weather = predict_weather(temperature, humidity)
+    print(f"Predicted weather: {predicted_weather}")
+
+
+    # Self-learning mechanism (simulated): Add new data point and retrain
+    new_temp = float(input("Enter new recorded temperature: "))
+    new_humidity = float(input("Enter new recorded humidity: "))
+    new_weather = int(input("Enter new weather (0 for sunny, 1 for rainy): "))
+
+
+    X = np.vstack((X, [new_temp, new_humidity]))
+    y = np.append(y, new_weather)
+
+    model.fit(X, y)  # Retrain with new data
+    print("Model retrained with new data.")
+
+    predicted_weather = predict_weather(temperature, humidity)
+    print(f"Updated model prediction: {predicted_weather}")
+
+except FileNotFoundError:
+    print("Error: File not found. Please upload a valid CSV file.")
+except Exception as e:
+    print(f"An error occurred: {e}")
