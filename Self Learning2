@@ -1,0 +1,44 @@
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+# Sample weather data (temperature, humidity) and corresponding weather outcome (0 for sunny, 1 for rainy)
+X = np.array([[25, 60], [28, 70], [20, 50], [22, 65], [30, 80], [27, 75], [18, 45], [23, 55]])
+y = np.array([0, 1, 0, 0, 1, 1, 0, 0])  # Replace with actual weather data labels
+
+
+# Create and train the model
+model = LogisticRegression()
+model.fit(X, y)
+
+# Function to predict weather based on user input
+def predict_weather(temperature, humidity):
+    prediction = model.predict(np.array([[temperature, humidity]]))
+    if prediction[0] == 0:
+        return "sunny"
+    else:
+        return "rainy"
+
+
+# Example usage
+temperature = float(input("Enter temperature: "))
+humidity = float(input("Enter humidity: "))
+
+predicted_weather = predict_weather(temperature, humidity)
+print(f"Predicted weather: {predicted_weather}")
+
+
+# Self-learning mechanism (simulated): Add new data point and retrain
+# In a real scenario, you'd integrate with a weather data source
+new_temp = float(input("Enter new recorded temperature: "))
+new_humidity = float(input("Enter new recorded humidity: "))
+new_weather = int(input("Enter new weather (0 for sunny, 1 for rainy): "))
+
+X = np.vstack((X, [new_temp, new_humidity]))
+y = np.append(y, new_weather)
+
+model.fit(X, y) # Retrain with new data
+print("Model retrained with new data.")
+
+# Predict weather using the updated model:
+predicted_weather = predict_weather(temperature, humidity)
+print(f"Updated model prediction: {predicted_weather}")
