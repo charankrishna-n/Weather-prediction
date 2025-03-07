@@ -1,0 +1,23 @@
+# prompt: using model.h5 create a small prog to get answer of prediction from model.h5
+
+import joblib
+import numpy as np
+
+# Load the trained model
+model = joblib.load('model.h5')
+
+# Function to predict weather
+def predict_weather(temperature, humidity):
+    prediction = model.predict(np.array([[temperature, humidity]]))
+    if prediction[0] == 0:
+        return "sunny"
+    else:
+        return "rainy"
+
+# Get user input for temperature and humidity
+temperature = float(input("Enter temperature: "))
+humidity = float(input("Enter humidity: "))
+
+# Make the prediction
+predicted_weather = predict_weather(temperature, humidity)
+print(f"Predicted weather: {predicted_weather}")
